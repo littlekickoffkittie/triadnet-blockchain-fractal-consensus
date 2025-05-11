@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TriadNet Mining Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+        }
+        /* Subtle table row hover animation */
+        tbody tr:hover {
+            background-color: #1f2937; /* Tailwind slate-800 */
+            transition: background-color 0.3s ease;
+        }
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827; /* Tailwind slate-900 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #374151; /* Tailwind slate-700 */
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-6">
+    <header class="mb-8">
+        <h1 class="text-4xl font-semibold tracking-wide">TriadNet Mining Dashboard</h1>
+        <p class="text-gray-400 mt-1">Latest 10 blocks overview</p>
+    </header>
+    <main class="space-y-8">
+        <!-- SSH Connection Panel -->
+        <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
+            <h2 class="text-2xl font-semibold mb-6">SSH Connection</h2>
+            <form id="sshForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="host" class="block text-sm font-medium mb-2">Host / IP Address</label>
+                        <input type="text" id="host" name="host" 
+                               class="w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 focus:border-white focus:ring-1 focus:ring-white focus:outline-none transition-colors"
+                               placeholder="192.168.1.164" required
+                               pattern="^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
+                               title="Please enter a valid IP address (0-255 for each octet, e.g., 192.168.1.164)"
+                               oninvalid="this.setCustomValidity('Please enter a valid IP address (0-255 for each octet)')"
+                               oninput="this.setCustomValidity('')">
+                    </div>
+                    <div>
+                        <label for="username" class="block text-sm font-medium mb-2">Username</label>
+                        <input type="text" id="username" name="username" 
+                               class="w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 focus:border-white focus:ring-1 focus:ring-white focus:outline-none transition-colors"
+                               placeholder="amy" required
+                               pattern="^[a-zA-Z0-9_-]+$"
+                               title="Username can only contain letters, numbers, underscores, and hyphens"
+                               autocomplete="username">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium mb-2">Password</label>
+                        <input type="password" id="password" name="password" 
+                               class="w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 focus:border-white focus:ring-1 focus:ring-white focus:outline-none transition-colors"
+                               placeholder="Enter password" required
+                               autocomplete="current-password"
+                               minlength="6">
+                    </div>
+                </div>
+                <div class="flex space-x-4 mt-6">
+                    <button type="submit" 
+                            class="px-6 py-2 bg-white text-black rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 transition-colors">
+                        Connect
+                    </button>
+                    <button type="button" id="disconnectBtn"
+                            class="px-6 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 transition-colors">
+                        Disconnect
+                    </button>
+                </div>
+            </form>
+            <div id="sshStatus" class="mt-4 opacity-0 transition-opacity duration-300"></div>
+            <div id="validationStatus" class="mt-2 text-sm text-gray-400"></div>
+        </div>
+        <div class="overflow-x-auto rounded-lg border border-gray-700">
+            <table class="min-w-full divide-y divide-gray-700">
+                <thead class="bg-gray-900">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Block Hash</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Nonce</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Duration (s)</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Coordinates</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Transactions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-gray-800 divide-y divide-gray-700">
+                    {% for block in blocks %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap font-mono text-sm">{{ block.hash[:20] }}...</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">{{ block.nonce }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">{{ block.duration | round(3) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">{{ block.coord }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">{{ block.transactions | length }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <script>
+        // SSH Connection Handling
+        document.getElementById('sshForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const statusDiv = document.getElementById('sshStatus');
+            const connectBtn = this.querySelector('button[type="submit"]');
+            const disconnectBtn = document.getElementById('disconnectBtn');
+            
+            // Show loading state
+            connectBtn.disabled = true;
+            connectBtn.innerHTML = 'Connecting...';
+            
+            try {
+                const response = await fetch('/connect-ssh', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        host: document.getElementById('host').value,
+                        username: document.getElementById('username').value,
+                        password: document.getElementById('password').value
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showStatus('success', data.message);
+                    // Store connection ID for disconnect
+                    disconnectBtn.dataset.connectionId = data.connection_id;
+                    // Update UI state
+                    document.getElementById('host').disabled = true;
+                    document.getElementById('username').disabled = true;
+                    document.getElementById('password').disabled = true;
+                    connectBtn.disabled = true;
+                    disconnectBtn.disabled = false;
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                showStatus('error', error.message);
+            } finally {
+                connectBtn.disabled = false;
+                connectBtn.innerHTML = 'Connect';
+            }
+        });
+
+        // Disconnect handling
+        document.getElementById('disconnectBtn').addEventListener('click', async function() {
+            if (!this.dataset.connectionId) {
+                document.getElementById('sshStatus').innerHTML = `
+                    <div class="mt-4 p-4 bg-gray-900 border border-yellow-500 rounded-md">
+                        <p class="text-yellow-500">No active connection to disconnect.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                const response = await fetch('/disconnect-ssh', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        connection_id: this.dataset.connectionId
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showStatus('success', data.message);
+                    // Clear connection ID
+                    this.dataset.connectionId = '';
+                    // Reset UI state
+                    document.getElementById('host').disabled = false;
+                    document.getElementById('username').disabled = false;
+                    document.getElementById('password').disabled = false;
+                    connectBtn.disabled = false;
+                    disconnectBtn.disabled = true;
+                    // Clear password field
+                    document.getElementById('password').value = '';
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                showStatus('error', error.message);
+            }
+        });
+
+        // Add IP address validation feedback
+        document.getElementById('host').addEventListener('input', function(e) {
+            const input = e.target;
+            const validationStatus = document.getElementById('validationStatus');
+            const ipPattern = /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+            
+            if (input.value && !ipPattern.test(input.value)) {
+                validationStatus.textContent = 'IP address must be in the format xxx.xxx.xxx.xxx where xxx is between 0 and 255';
+                validationStatus.classList.remove('text-gray-400');
+                validationStatus.classList.add('text-red-500');
+            } else if (input.value && ipPattern.test(input.value)) {
+                validationStatus.textContent = 'Valid IP address format';
+                validationStatus.classList.remove('text-red-500', 'text-gray-400');
+                validationStatus.classList.add('text-green-500');
+            } else {
+                validationStatus.textContent = '';
+            }
+        });
+
+        // Helper function to show status messages
+        function showStatus(type, message) {
+            const statusDiv = document.getElementById('sshStatus');
+            const borderColor = type === 'success' ? 'border-green-500' : 
+                              type === 'warning' ? 'border-yellow-500' : 'border-red-500';
+            const textColor = type === 'success' ? 'text-green-500' : 
+                            type === 'warning' ? 'text-yellow-500' : 'text-red-500';
+            
+            statusDiv.innerHTML = `
+                <div class="mt-4 p-4 bg-gray-900 border ${borderColor} rounded-md">
+                    <p class="${textColor}">${type === 'error' ? 'Error: ' : ''}${message}</p>
+                </div>
+            `;
+            
+            // Show the status with animation
+            statusDiv.classList.remove('opacity-0');
+            
+            // Hide the status after 5 seconds for success messages
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusDiv.classList.add('opacity-0');
+                }, 5000);
+            }
+        }
+    </script>
+
+    <footer class="mt-12 text-center text-gray-500 text-xs">
+        &copy; 2024 TriadNet. All rights reserved.
+    </footer>
+</body>
+</html>
