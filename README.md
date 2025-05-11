@@ -2,6 +2,21 @@
 
 A real-time blockchain mining dashboard with fractal visualization for the TriadNet proof-of-work system.
 
+## Quick Start ⚡
+
+Simply run:
+```bash
+python3 start_dashboard.py
+```
+
+The script automatically:
+- Cleans up any existing processes
+- Starts all required servers
+- Opens the dashboard in your browser
+- Provides real-time status updates
+
+To stop the dashboard, press `Ctrl+C` in the terminal.
+
 ## Features
 
 ### Real-time Mining Statistics
@@ -42,7 +57,9 @@ A real-time blockchain mining dashboard with fractal visualization for the Triad
 - Transaction pool handling
 - Network statistics aggregation
 
-## Getting Started
+## Manual Setup
+
+If you prefer to start servers manually:
 
 1. Start the WebSocket server:
 ```bash
@@ -91,6 +108,7 @@ http://localhost:8000/index.html
 ├── dashboard.js        # Frontend controller
 ├── sierpinski.js       # Fractal visualization
 ├── dashboard_server.py # WebSocket server
+├── start_dashboard.py  # Quick start script
 └── README.md          # Documentation
 ```
 
@@ -99,9 +117,7 @@ http://localhost:8000/index.html
 ### Running in Development Mode
 1. Clone the repository
 2. Install dependencies: `pip install websockets`
-3. Start WebSocket server: `python3 dashboard_server.py`
-4. Start HTTP server: `python3 -m http.server 8000`
-5. Open browser at `http://localhost:8000`
+3. Run: `python3 start_dashboard.py`
 
 ### Architecture Components
 
@@ -122,6 +138,12 @@ http://localhost:8000/index.html
 - Mining operation control
 - Transaction pool management
 - Network statistics aggregation
+
+#### Quick Start Script (start_dashboard.py)
+- Automatic process management
+- Sequential server startup
+- Port cleanup and validation
+- Graceful shutdown handling
 
 ## Production Deployment Notes
 
