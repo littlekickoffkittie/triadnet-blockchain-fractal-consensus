@@ -1,0 +1,4 @@
+{
+  "tests/test_additional.py::test_wallet_create_and_sign_transaction": true,
+  "tests/test_ssh_connection.py::TestSSHConnection": true
+}
