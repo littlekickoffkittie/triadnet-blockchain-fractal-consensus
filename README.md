@@ -1,163 +1,160 @@
-Current Version: 0.1 (as of 2025-05-11)
+# TriadNet Mining Dashboard
 
-## Overview
-
-TriadNet is an innovative blockchain implementation that uses fractal coordinates for mining difficulty adjustment, creating a unique and mathematically beautiful consensus mechanism called Proof of Fractal Work (PoFW).
+A real-time blockchain mining dashboard with fractal visualization for the TriadNet proof-of-work system.
 
 ## Features
 
-- **Proof of Fractal Work (PoFW)**: Novel consensus mechanism using fractal mathematics
-- **Dynamic Difficulty**: Automatic adjustment based on fractal coordinates
-- **Fractal Mining**: Unique mining algorithm that explores mathematical space
-- **Smart Transaction Management**: Efficient handling of pending transactions
-- **Real-time Statistics**: Comprehensive mining and blockchain statistics
+### Real-time Mining Statistics
+- Live chain height monitoring
+- Dynamic difficulty adjustments
+- Real-time mining rewards tracking
+- Hash rate visualization
+- Network statistics monitoring
+- Transaction pool updates
+- Mining logs with fractal coordinates
 
-## Quick Start
+### Interactive Mining Controls
+- Start/Stop mining operations
+- Worker thread management
+- Mining algorithm selection
+- Real-time status feedback
 
-For detailed quick start instructions, please refer to the [QUICKSTART.md](QUICKSTART.md) file.
+### Visual Elements
+- Sierpinski triangle background animation
+- Glass-morphism UI design
+- Real-time data visualization
+- Responsive layout
+- Status indicators
 
-## Project Structure
+## Technical Architecture
 
-triadnet/
-├── core/           # Core blockchain components
-├── consensus/      # Consensus mechanism implementation
-├── crypto/        # Cryptographic utilities
-└── mine.py        # Mining implementation
+### Frontend
+- Pure HTML/CSS/JavaScript implementation
+- Tailwind CSS for styling
+- WebSocket client for real-time updates
+- Canvas-based fractal visualization
+- Responsive glass-morphism design
 
-## Development Status
+### Backend
+- Python WebSocket server
+- Real-time data processing
+- Mining operation management
+- Transaction pool handling
+- Network statistics aggregation
 
-Last Updated: 2025-05-11 01:00:34 UTC
+## Getting Started
 
-• Initial implementation complete
+1. Start the WebSocket server:
+```bash
+python3 dashboard_server.py
+```
 
-• Mining system operational
+2. Start the HTTP server:
+```bash
+python3 -m http.server 8000
+```
 
-• Basic transaction processing working
+3. Open the dashboard:
+```
+http://localhost:8000/index.html
+```
 
-• Fractal coordinate system implemented
+## Dependencies
 
-## Contributors
+### Frontend
+- Tailwind CSS (via CDN)
+- Google Fonts (Fira Code, Orbitron)
+- Font Awesome icons
 
-• @littlekickoffkittie (Project Lead)
+### Backend
+- Python 3.10+
+- websockets library (`pip install websockets`)
+
+## Architecture Details
+
+### WebSocket Communication
+- Server runs on `ws://localhost:8765`
+- Real-time bidirectional communication
+- Automatic reconnection handling
+- Data refresh every 3 seconds
+
+### Data Flow
+1. Client establishes WebSocket connection
+2. Server streams mining statistics
+3. Client updates UI in real-time
+4. Mining controls send commands to server
+5. Server processes commands and updates state
+
+### File Structure
+```
+├── index.html          # Main dashboard interface
+├── dashboard.js        # Frontend controller
+├── sierpinski.js       # Fractal visualization
+├── dashboard_server.py # WebSocket server
+└── README.md          # Documentation
+```
+
+## Development
+
+### Running in Development Mode
+1. Clone the repository
+2. Install dependencies: `pip install websockets`
+3. Start WebSocket server: `python3 dashboard_server.py`
+4. Start HTTP server: `python3 -m http.server 8000`
+5. Open browser at `http://localhost:8000`
+
+### Architecture Components
+
+#### Frontend Controller (dashboard.js)
+- WebSocket connection management
+- UI state management
+- Real-time data handling
+- Mining control interface
+
+#### Fractal Visualization (sierpinski.js)
+- Canvas-based rendering
+- Dynamic scaling and rotation
+- GPU-accelerated animations
+- Responsive design integration
+
+#### WebSocket Server (dashboard_server.py)
+- Real-time data streaming
+- Mining operation control
+- Transaction pool management
+- Network statistics aggregation
+
+## Production Deployment Notes
+
+1. Replace Tailwind CSS CDN with production build
+2. Configure proper WebSocket security
+3. Set up proper process management
+4. Implement proper error logging
+5. Add monitoring and analytics
+
+## Security Considerations
+
+1. WebSocket connection security
+2. Mining operation validation
+3. Data integrity verification
+4. Access control implementation
+5. Error handling and logging
+
+## Future Enhancements
+
+1. Advanced fractal visualizations
+2. Enhanced mining analytics
+3. Network topology visualization
+4. Performance optimization
+5. Additional mining algorithms
+
+## Contributing
+
+1. Fork the repository
+2. Create feature branch
+3. Commit changes
+4. Push to branch
+5. Create Pull Request
 
 ## License
 
 MIT License - See LICENSE file for details
-
-Last Updated: 2025-05-11 01:00:34 UTC
-
-Prerequisites
-
-• Python 3.8+
-
-• pip package manager
-
-• Virtual environment (recommended)
-
-Installation
-1. Clone the repository:
-git clone https://github.com/littlekickoffkittie/triadnet.git
-cd triadnet
-2. Create and activate a virtual environment:
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-3. Install the package:
-pip install -e .
-Running the Mining Demo
-python run_demo.py
-You should see output similar to:
-==================================================
-TRIADNET MINING SYSTEM
-Current Time (UTC): 2025-05-11 01:00:34
-User: littlekickoffkittie
-==================================================
-
-1. Initializing wallet and blockchain...
-
-Key Components
-
-1. Wallet
-
-• Automatically generated on startup
-
-• Address format: TRIAD<40 hex characters>
-
-2. Blockchain
-
-• Initial difficulty: 4
-
-• Genesis block created automatically
-
-3. Mining
-
-• Proof of Fractal Work consensus
-
-• Dynamic difficulty adjustment
-
-• Automatic coordinate optimization
-
-4. Transactions
-
-• Automatic reward transactions
-
-• Support for custom transactions
-
-Monitoring
-
-The system provides real-time statistics:
-
-• Chain height
-
-• Current difficulty
-
-• Mining rewards
-
-• Hash rate
-
-• Transaction pool status
-
-Configuration
-
-Default settings can be modified in run_demo.py:
-blockchain = Blockchain(difficulty=4)  # Adjust initial difficulty
-miner = Miner(
-    wallet=wallet,
-    blockchain=blockchain,
-    fractal_coord=fractal_coord,
-    auto_adjust_coords=True  # Toggle coordinate optimization
-)
-Troubleshooting
-
-1. No blocks being mined
-
-• Check difficulty setting
-
-• Verify fractal coordinates
-
-• Monitor system resources
-
-2. Slow mining rate
-
-• Reduce initial difficulty
-
-• Adjust fractal coordinates
-
-• Check system performance
-
-3. Import errors
-
-• Verify virtual environment activation
-
-• Reinstall package: pip install -e .
-
-Support
-
-For issues and questions:
-
-• Create an issue on GitHub
-
-• Check existing documentation
-
-• Contact: @littlekickoffkittie’ > QUICKSTART.md && echo ’# TriadNet: A Fractal-Based Blockchain ArchitectureWhite Paper - Version 0.1
-
-Last Updated: 2025-05-11 01:00:34 UTCAuthor: @littlekickoffkittie
