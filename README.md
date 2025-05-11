@@ -1,182 +1,176 @@
-# TriadNet Mining Dashboard
+Current Version: 0.1 (as of 2025-05-11)
 
-A real-time blockchain mining dashboard with fractal visualization for the TriadNet proof-of-work system.
+## Overview
 
-## Quick Start ⚡
-
-Simply run:
-```bash
-python3 start_dashboard.py
-```
-
-The script automatically:
-- Cleans up any existing processes
-- Starts all required servers
-- Opens the dashboard in your browser
-- Provides real-time status updates
-
-To stop the dashboard, press `Ctrl+C` in the terminal.
+TriadNet is an innovative blockchain implementation that uses fractal coordinates for mining difficulty adjustment, creating a unique and mathematically beautiful consensus mechanism called Proof of Fractal Work (PoFW).
 
 ## Features
 
-### Real-time Mining Statistics
-- Live chain height monitoring
-- Dynamic difficulty adjustments
-- Real-time mining rewards tracking
-- Hash rate visualization
-- Network statistics monitoring
-- Transaction pool updates
-- Mining logs with fractal coordinates
+- **Proof of Fractal Work (PoFW)**: Novel consensus mechanism using fractal mathematics
+- **Dynamic Difficulty**: Automatic adjustment based on fractal coordinates
+- **Fractal Mining**: Unique mining algorithm that explores mathematical space
+- **Smart Transaction Management**: Efficient handling of pending transactions
+- **Real-time Statistics**: Comprehensive mining and blockchain statistics
 
-### Interactive Mining Controls
-- Start/Stop mining operations
-- Worker thread management
-- Mining algorithm selection
-- Real-time status feedback
+## Quick Start
 
-### Visual Elements
-- Sierpinski triangle background animation
-- Glass-morphism UI design
-- Real-time data visualization
-- Responsive layout
-- Status indicators
-
-## Technical Architecture
-
-### Frontend
-- Pure HTML/CSS/JavaScript implementation
-- Tailwind CSS for styling
-- WebSocket client for real-time updates
-- Canvas-based fractal visualization
-- Responsive glass-morphism design
-
-### Backend
-- Python WebSocket server
-- Real-time data processing
-- Mining operation management
-- Transaction pool handling
-- Network statistics aggregation
-
-## Manual Setup
-
-If you prefer to start servers manually:
-
-1. Start the WebSocket server:
 ```bash
-python3 dashboard_server.py
-```
+# Clone the repository
+git clone https://github.com/littlekickoffkittie/triadnet.git
+cd triadnet
 
-2. Start the HTTP server:
-```bash
-python3 -m http.server 8000
-```
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-3. Open the dashboard:
-```
-http://localhost:8000/index.html
-```
+# Install dependencies
+pip install -e .
 
-## Dependencies
+# Run the mining demo
+python run_demo.py
 
-### Frontend
-- Tailwind CSS (via CDN)
-- Google Fonts (Fira Code, Orbitron)
-- Font Awesome icons
+# Project Structure
 
-### Backend
-- Python 3.10+
-- websockets library (`pip install websockets`)
+triadnet/
+├── core/           # Core blockchain components
+├── consensus/      # Consensus mechanism implementation
+├── crypto/        # Cryptographic utilities
+└── mine.py        # Mining implementation
 
-## Architecture Details
+Development Status
 
-### WebSocket Communication
-- Server runs on `ws://localhost:8765`
-- Real-time bidirectional communication
-- Automatic reconnection handling
-- Data refresh every 3 seconds
+Last Updated: 2025-05-11 01:00:34 UTC
 
-### Data Flow
-1. Client establishes WebSocket connection
-2. Server streams mining statistics
-3. Client updates UI in real-time
-4. Mining controls send commands to server
-5. Server processes commands and updates state
+• Initial implementation complete
 
-### File Structure
-```
-├── index.html          # Main dashboard interface
-├── dashboard.js        # Frontend controller
-├── sierpinski.js       # Fractal visualization
-├── dashboard_server.py # WebSocket server
-├── start_dashboard.py  # Quick start script
-└── README.md          # Documentation
-```
+• Mining system operational
 
-## Development
+• Basic transaction processing working
 
-### Running in Development Mode
-1. Clone the repository
-2. Install dependencies: `pip install websockets`
-3. Run: `python3 start_dashboard.py`
+• Fractal coordinate system implemented
 
-### Architecture Components
+Contributors
 
-#### Frontend Controller (dashboard.js)
-- WebSocket connection management
-- UI state management
-- Real-time data handling
-- Mining control interface
+• @littlekickoffkittie (Project Lead)
 
-#### Fractal Visualization (sierpinski.js)
-- Canvas-based rendering
-- Dynamic scaling and rotation
-- GPU-accelerated animations
-- Responsive design integration
+License
 
-#### WebSocket Server (dashboard_server.py)
-- Real-time data streaming
-- Mining operation control
-- Transaction pool management
-- Network statistics aggregation
+MIT License - See LICENSE file for details’ > README.md && echo ’# TriadNet Quick Start Guide
 
-#### Quick Start Script (start_dashboard.py)
-- Automatic process management
-- Sequential server startup
-- Port cleanup and validation
-- Graceful shutdown handling
+Last Updated: 2025-05-11 01:00:34 UTC
 
-## Production Deployment Notes
+Prerequisites
 
-1. Replace Tailwind CSS CDN with production build
-2. Configure proper WebSocket security
-3. Set up proper process management
-4. Implement proper error logging
-5. Add monitoring and analytics
+• Python 3.8+
 
-## Security Considerations
+• pip package manager
 
-1. WebSocket connection security
-2. Mining operation validation
-3. Data integrity verification
-4. Access control implementation
-5. Error handling and logging
+• Virtual environment (recommended)
 
-## Future Enhancements
+Installation
+1. Clone the repository:
+git clone https://github.com/littlekickoffkittie/triadnet.git
+cd triadnet
+2. Create and activate a virtual environment:
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+3. Install the package:
+pip install -e .
+Running the Mining Demo
+python run_demo.py
+You should see output similar to:
+==================================================
+TRIADNET MINING SYSTEM
+Current Time (UTC): 2025-05-11 01:00:34
+User: littlekickoffkittie
+==================================================
 
-1. Advanced fractal visualizations
-2. Enhanced mining analytics
-3. Network topology visualization
-4. Performance optimization
-5. Additional mining algorithms
+1. Initializing wallet and blockchain...
 
-## Contributing
+Key Components
 
-1. Fork the repository
-2. Create feature branch
-3. Commit changes
-4. Push to branch
-5. Create Pull Request
+1. Wallet
 
-## License
+• Automatically generated on startup
 
-MIT License - See LICENSE file for details
+• Address format: TRIAD<40 hex characters>
+
+2. Blockchain
+
+• Initial difficulty: 4
+
+• Genesis block created automatically
+
+3. Mining
+
+• Proof of Fractal Work consensus
+
+• Dynamic difficulty adjustment
+
+• Automatic coordinate optimization
+
+4. Transactions
+
+• Automatic reward transactions
+
+• Support for custom transactions
+
+Monitoring
+
+The system provides real-time statistics:
+
+• Chain height
+
+• Current difficulty
+
+• Mining rewards
+
+• Hash rate
+
+• Transaction pool status
+
+Configuration
+
+Default settings can be modified in run_demo.py:
+blockchain = Blockchain(difficulty=4)  # Adjust initial difficulty
+miner = Miner(
+    wallet=wallet,
+    blockchain=blockchain,
+    fractal_coord=fractal_coord,
+    auto_adjust_coords=True  # Toggle coordinate optimization
+)
+Troubleshooting
+
+1. No blocks being mined
+
+• Check difficulty setting
+
+• Verify fractal coordinates
+
+• Monitor system resources
+
+2. Slow mining rate
+
+• Reduce initial difficulty
+
+• Adjust fractal coordinates
+
+• Check system performance
+
+3. Import errors
+
+• Verify virtual environment activation
+
+• Reinstall package: pip install -e .
+
+Support
+
+For issues and questions:
+
+• Create an issue on GitHub
+
+• Check existing documentation
+
+• Contact: @littlekickoffkittie’ > QUICKSTART.md && echo ’# TriadNet: A Fractal-Based Blockchain ArchitectureWhite Paper - Version 0.1
+
+Last Updated: 2025-05-11 01:00:34 UTCAuthor: @littlekickoffkittie
