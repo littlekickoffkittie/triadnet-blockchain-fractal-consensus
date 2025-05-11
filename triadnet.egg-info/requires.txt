@@ -1,0 +1,4 @@
+typing
+dataclasses
+paramiko>=2.7.2
+flask>=2.0.0
