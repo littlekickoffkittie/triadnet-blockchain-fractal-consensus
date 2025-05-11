@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>TriadNet Fractal Work Mining Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="sierpinski.js"></script>
+  <script src="dashboard.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Orbitron:wght@400;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --primary-dark: #0A0F2D;
+      --secondary-dark: #080D24;
+      --tertiary-dark: #0C1436;
+      --panel-bg: rgba(255 255 255 / 0.08);
+      --panel-bg-glass: rgba(255 255 255 / 0.12);
+      --text-light: #FFFFFF;
+      --text-dim: #B8B8B8;
+      --text-muted: #707070;
+      --accent-blue: #00D1FF;
+      --accent-teal: #00F5D4;
+      --accent-purple: #9B51E0;
+      --glow-intensity: 0.4;
+      --glass-blur: 16px;
+      --glass-border: rgba(255 255 255 / 0.2);
+    }
+
+    body {
+      background: var(--primary-dark);
+      font-family: 'Fira Code', monospace;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: var(--text-light);
+      user-select: none;
+      overflow-x: hidden;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    header {
+      border-bottom: 1px solid var(--glass-border);
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--panel-bg-glass);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 8px 32px 0 rgba(255 255 255 / 0.1);
+      gap: 1rem;
+      width: 100%;
+      max-width: 1200px;
+      border-radius: 12px;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      height: 40px;
+      width: 40px;
+      filter: drop-shadow(0 0 8px rgba(0, 209, 255, 0.8));
+      animation: pulse-glow 3s infinite ease-in-out;
+      transition: transform 0.3s ease;
+      border-radius: 8px;
+      background: rgba(255 255 255 / 0.1);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--accent-blue);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-auto-rows: minmax(80px, auto);
+      gap: 1rem;
+      width: 100%;
+      max-width: 1200px;
+      margin-top: 1rem;
+    }
+
+    .dashboard-item {
+      background: var(--panel-bg-glass);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px 0 rgba(255 255 255 / 0.1);
+      border: 1px solid var(--glass-border);
+      padding: 1rem 1.25rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      animation: fade-in 0.6s ease-out;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+    }
+
+    .dashboard-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 40px 0 rgba(0, 209, 255, 0.3);
+      border-color: var(--accent-blue);
+      background: rgba(255 255 255 / 0.2);
+    }
+
+    .half-width { grid-column: span 6; }
+    .third-width { grid-column: span 4; }
+    .full-width { grid-column: span 12; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .stat-box {
+      background: rgba(255 255 255 / 0.15);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .stat-box:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 209, 255, 0.3);
+      border-color: var(--accent-blue);
+    }
+
+    .stat-icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      color: var(--accent-blue);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-value {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.75rem;
+      background: var(--panel-bg-glass);
+      backdrop-filter: blur(var(--glass-blur));
+      border-radius: 50px;
+      font-size: 0.85rem;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent-teal);
+      box-shadow: 0 0 10px var(--accent-teal);
+      animation: pulse-glow 2s infinite;
+    }
+
+    @keyframes pulse-glow {
+      0% { box-shadow: 0 0 10px rgba(0, 209, 255, 0.5); }
+      50% { box-shadow: 0 0 25px rgba(0, 209, 255, 0.8); }
+      100% { box-shadow: 0 0 10px rgba(0, 209, 255, 0.5); }
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+      }
+      .status-indicator { align-self: center; }
+      .third-width, .quarter-width { grid-column: span 12; }
+      .stats-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+      .network-stats { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+      .footer-content { flex-direction: column; gap: 0.75rem; }
+    }
+    @media (max-width: 480px) {
+      header h1 { font-size: 1.1rem; }
+      .dashboard-grid { gap: 0.75rem; }
+      .dashboard-item { padding: 0.75rem 1rem; }
+      .stat-box { padding: 0.5rem; font-size: 0.8rem; }
+      .stats-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 0.75rem; }
+      .stat-icon { font-size: 1.4rem; }
+      .stat-value { font-size: 1.1rem; }
+      .terminal-table th, .terminal-table td { padding: 0.4rem 0.6rem; font-size: 0.75rem; }
+    }
+
+    /* Gem Styles */
+    .gem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .gem-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      background: rgba(255 255 255 / 0.1);
+      border-radius: 8px;
+      color: var(--text-dim);
+      text-align: center;
+    }
+
+    .gem-placeholder i {
+      font-size: 2rem;
+      color: var(--accent-purple);
+      animation: pulse-glow 2s infinite;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-container" aria-label="Logo">
+      <div class="logo" aria-hidden="true"></></div>
+      <h1>TriadNet Proof of Fractal Work Mining Dashboard</h1>
+    </div>
+    <div class="status-indicator" aria-live="polite" aria-atomic="true">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span id="connection-status" class="font-mono">Initializing...</span>
+    </div>
+  </header>
+  <main>
+    <div class="dashboard-grid" role="main">
+      <!-- Mining System Overview -->
+      <section class="dashboard-item half-width" aria-labelledby="mining-overview-title" tabindex="0">
+        <div class="dashboard-header">
+          <h2 class="dashboard-title" id="mining-overview-title">
+            <i class="fas fa-microchip" aria-hidden="true"></i>
+            Mining System Overview
+          </h2>
+          <div class="mining-animation" aria-hidden="true">
+            <div class="mining-spinner"></div>
+          </div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-box" aria-label="Chain Height">
+            <i class="fas fa-layer-group stat-icon" aria-hidden="true"></i>
+            <div class="stat-label">Chain Height</div>
+            <div class="stat-value" id="chain-height" aria-live="polite">0</div>
+          </div>
+          <div class="stat-box" aria-label="Difficulty">
+            <i class="fas fa-tachometer-alt stat-icon" aria-hidden="true"></i>
+            <div class="stat-label">Difficulty</div>
+            <div class="stat-value" id="current-difficulty" aria-live="polite">0</div>
+          </div>
+          <div class="stat-box" aria-label="Rewards">
+            <i class="fas fa-coins stat-icon" aria-hidden="true"></i>
+            <div class="stat-label">Rewards</div>
+            <div class="stat-value" id="mining-rewards" aria-live="polite">0 TND</div>
+          </div>
+          <div class="stat-box" aria-label="Hash Rate">
+            <i class="fas fa-bolt stat-icon" aria-hidden="true"></i>
+            <div class="stat-label">Hash Rate</div>
+            <div class="stat-value" id="hash-rate" aria-live="polite">0 H/s</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Fractal Visualizer -->
+      <section class="dashboard-item half-width" aria-labelledby="fractal-visualizer-title" tabindex="0">
+        <div class="dashboard-header">
+          <h2 class="dashboard-title" id="fractal-visualizer-title">
+            <i class="fas fa-cube" aria-hidden="true"></i>
+            Fractal Coordinate Visualizer
+          </h2>
+        </div>
+        <div class="canvas-container" role="img" aria-label="Fractal coordinate visualizer">
+          <span class="text-center text-gray-400 italic select-none">Visualizer initializing...</span>
+        </div>
+      </section>
+
+      <!-- Mining Activity Chart -->
+      <section class="dashboard-item half-width" aria-labelledby="mining-performance-title" tabindex="0">
+        <div class="dashboard-header">
+          <h2 class="dashboard-title" id="mining-performance-title">
+            <i class="fas fa-chart-line" aria-hidden="true"></i>
+            Mining Performance
+          </h2>
+        </div>
+        <div class="chart-container" role="img" aria-label="Mining performance chart">
+          <span class="text-center text-gray-400 italic select-none">Chart initializing...</span>
+        </div>
+      </section>
+
+      <!-- Network Stats -->
+      <section class="dashboard-item half-width" aria-labelledby="network-stats-title" tabindex="0">
+        <div class="dashboard-header">
+          <h2 class="dashboard-title" id="network-stats-title">
+            <i class="fas fa-network-wired" aria-hidden="true"></i>
+            Network Statistics
+          </h2>
+        </div>
+        <div class="network-stats" role="list">
+          <div class="network-stat" role="listitem">
+            <div class="network-stat-value" id="connected-nodes" aria-live="polite">0</div>
+            <div class="network-stat-label">Connected Nodes</div>
+          </div>
+          <div class="network-stat" role="listitem">
+            <div class="network-stat-value" id="block-time" aria-live="polite">0s</div>
+            <div class="network-stat-label">Avg Block Time</div>
+          </div>
+          <div class="network-stat" role="listitem">
+            <div class="network-stat-value" id="network-hashrate" aria-live="polite">0 H/s</div>
+            <div class="network-stat-label">Network Hashrate</div>
+          </div>
+          <div class="network-stat" role="listitem">
+            <div class="network-stat-value" id="active-miners" aria-live="polite">0</div>
+            <div class="network-stat-label">Active Miners</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Transaction Pool -->
+      <section class="dashboard-item third-width" aria-labelledby="transaction-pool-title" tabindex="0">
+        <div class="dashboard-header">
+          <h2 class="dashboard-title" id="transaction-pool-title">
+            <i class="fas fa-exchange-alt" aria-hidden="true"></i>
+            Transaction Pool
+          </h2>
+        </div>
+        <div class="transaction-pool" id="transaction-pool" role="list">
+          <div class="transaction-item" role="listitem">
+            <span class="text-center w-full text-gray-400 italic select-none">Connecting to network...</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Gem Ledger -->
+      <section class="dashboard-item third-width" aria-labelledby="gem-ledger-title" tabindex="0">
+        <div class="dashboard-header">
+          <h2 class="dashboard-title" id="gem-ledger-title">
+            <i class="fas fa-gem" aria-hidden="true"></i>
+            Gem Ledger
+          </h2>
+        </div>
+        <div class="gem-grid" id="gem-ledger" role="grid">
+          <div class="gem-placeholder">
+            <i class="fas fa-gem"></i>
+            <span>Discovered gems will appear here</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mining Controls -->
+      <section class="dashboard-item third-width" aria-labelledby="mining-controls-title" tabindex="0">
+        <div class="dashboard-header">
+          <h2 class="dashboard-title" id="mining-controls-title">
+            <i class="fas fa-sliders-h" aria-hidden="true"></i>
+            Mining Controls
+          </h2>
+        </div>
+        <form class="flex flex-col justify-between h-full" onsubmit="return false;">
+          <div>
+            <label class="block mb-1 text-xs text-gray-300" for="worker-threads">Worker Threads</label>
+            <input type="range" id="worker-threads" name="worker-threads" min="1" max="16" value="4"
+                   class="w-full mb-5" aria-valuemin="1" aria-valuemax="16" aria-valuenow="4"/>
+            <div class="flex justify-between text-xs text-gray-400 -mt-3 px-1">
+              <span>1</span>
+              <span>8</span>
+              <span>16</span>
+            </div>
+          </div>
+          <div>
+            <label class="block mb-1 text-xs text-gray-300" for="mining-algorithm">Mining Algorithm</label>
+            <select id="mining-algorithm" name="mining-algorithm"
+                    class="w-full p-2 bg-[rgba(255,255,255,0.1)] text-white border border-[rgba(255,255,255,0.25)] rounded">
+              <option value="mandelbrot" selected>Mandelbrot</option>
+              <option value="julia">Julia Set</option>
+              <option value="sierpinski">Sierpinski Triangle</option>
+            </select>
+          </div>
+          <div class="controls mt-5">
+            <button id="start-mining" type="button" class="control-button">
+              <i class="fas fa-play" aria-hidden="true"></i>
+              Start Mining
+            </button>
+            <button id="stop-mining" type="button" disabled
+                    class="control-button bg-gradient-to-r from-gray-700 to-gray-900">
+              <i class="fas fa-stop" aria-hidden="true"></i>
+              Stop Mining
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Terminal Log -->
+      <section class="dashboard-item full-width" aria-labelledby="terminal-log-title" tabindex="0">
+        <div class="dashboard-header">
+          <h2 class="dashboard-title" id="terminal-log-title">
+            <i class="fas fa-terminal" aria-hidden="true"></i>
+            Mining Terminal Log
+          </h2>
+        </div>
+        <div class="terminal-container" role="region" tabindex="0">
+          <table class="terminal-table" role="table">
+            <thead>
+              <tr>
+                <th scope="col">Timestamp</th>
+                <th scope="col">Hash</th>
+                <th scope="col">Coordinates</th>
+                <th scope="col">Status</th>
+                <th scope="col">Discovery</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="timestamp-cell">-</td>
+                <td class="hash-cell">-</td>
+                <td class="coord-cell">-</td>
+                <td>-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="footer">
+    <div class="footer-content">
+      <div>© 2024 TriadNet. All rights reserved.</div>
+      <nav class="footer-links">
+        <a href="#" class="footer-link">Privacy Policy</a>
+        <a href="#" class="footer-link">Terms of Service</a>
+        <a href="#" class="footer-link">Contact</a>
+        <a href="#" class="footer-link">GitHub</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>
